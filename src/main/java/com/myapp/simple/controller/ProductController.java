@@ -1,5 +1,8 @@
 package com.myapp.simple.controller;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.myapp.simple.model.Product;
+import com.myapp.simple.response.BaseResponse;
 import com.myapp.simple.service.ProductService;
 
 import reactor.core.publisher.Flux;
@@ -30,8 +34,21 @@ public class ProductController {
   
   @GetMapping("/products")
   @ResponseStatus(HttpStatus.OK)
-  public Flux<Product> getAllProducts(@RequestParam(required = false) String Name) {
-    return productService.findAll();
+  public Mono<BaseResponse<List<Product>>> getAllProducts(@RequestParam(required = false) String name) {
+    Flux<Product> product = productService.findAll();
+
+    return product
+        .collectList()
+        .map(data -> {
+            if (data.isEmpty()) {
+                return new BaseResponse<>("success", "No products found", data);
+            } else {
+                return new BaseResponse<>("success", "Products fetched successfully", data);
+            }
+        })
+        .onErrorResume(e -> {
+            return Mono.just(new BaseResponse<>("error", "Failed to fetch products: " + e.getMessage(), Collections.emptyList()));
+        });
   }
 
   @PostMapping("/products")
