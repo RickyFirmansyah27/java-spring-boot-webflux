@@ -3,6 +3,9 @@ package com.myapp.simple.controller;
 import java.util.Collections;
 import java.util.List;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -31,9 +34,12 @@ public class ProductController {
   @Autowired
   ProductService productService;
 
+  private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
+
   @GetMapping("/products")
   @ResponseStatus(HttpStatus.OK)
   public Mono<BaseResponse<List<Product>>> getAllProducts(@RequestParam(required = false) String name) {
+    logger.info("[ProductController.createProduct]");
     Flux<Product> product = productService.findAll();
 
     return product
@@ -42,6 +48,7 @@ public class ProductController {
           if (data.isEmpty()) {
             return new BaseResponse<>("success", "No products found", data);
           } else {
+            logger.info("[ProductController.createProduct {}]", data);
             return new BaseResponse<>("success", "Products fetched successfully", data);
           }
         })

@@ -3,6 +3,7 @@ package com.myapp.simple.model;
 import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.myapp.simple.helper.JsonStringHelper;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -61,6 +62,9 @@ public class Product implements Serializable {
         this.price = price;
     }
 
-    //setter getter
+    @Override
+    public String toString() {
+        return JsonStringHelper.toString("Product", "id", id, "name", name, "description", description, "price", price);
+    }
 
 }
