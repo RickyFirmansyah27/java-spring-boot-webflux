@@ -93,6 +93,6 @@ public class ProductController {
     return productService.deleteAll()
         .then(Mono.just(new BaseResponse<>("success", "All products deleted successfully", null)))
         .onErrorResume(
-            e -> Mono.just(new BaseResponse<>("error", "Failed to delete products: " + e.getMessage(), null)));
+            e -> Mono.just(new BaseResponse<>("error", "Failed to delete product: " + e.getMessage(), null)));
   }
 }

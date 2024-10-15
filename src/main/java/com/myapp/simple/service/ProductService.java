@@ -34,12 +34,9 @@ public class ProductService {
   public Mono<Product> update(Long id, Product product) {
     return productRepository.findById(id)
         .flatMap(existingProduct -> {
-            // Update field yang diperlukan
             existingProduct.setName(product.getName());
             existingProduct.setDescription(product.getDescription());
             existingProduct.setPrice(product.getPrice());
-            
-            // Simpan perubahan
             return productRepository.save(existingProduct);
         });
 }
